@@ -3,8 +3,14 @@ from tkinter import ttk, NW, filedialog
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
+from PIL.ImageTk import PhotoImage
+from matplotlib import pyplot as plt
+
+
 import cv2
 from PIL import Image, ImageTk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
 
 window = tk.Tk()
 window.geometry("1280x720")
@@ -35,6 +41,7 @@ def open_file():
     )
 
     open_img()
+    show_hist()
 
 
 def open_img():
@@ -51,6 +58,27 @@ def open_img():
     panel = tk.Label(citra_left, image=img)
     panel.image = img
     panel.pack()
+
+
+def show_hist():
+    global matrix_img
+
+    x = filename
+
+    matrix_img = cv2.imread(x)
+    matrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)
+    matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)
+
+    # histr = cv2.calcHist([matrix_img], [0], None, [256], [0, 256])
+
+    f = Figure(figsize=(1, 1), dpi=50)
+    a = f.add_subplot()
+
+    canvas = FigureCanvasTkAgg(f, hist_left)
+    canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+
+    plt.plot(matrix_img, ax=a)
+    plt.show()
 
 
 # create a toplevel menu
@@ -94,6 +122,19 @@ hist_right.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 frame_mid = tk.Frame(master=window, height=50, bd=1, relief="raised")
 frame_mid.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 
+# button
+'''image = Image.open('play.png')
+image = image.resize((30,30))
+play = PhotoImage(file ='play.png')'''
+b_play = tk.Button(frame_mid, text ="play", width=20)
+b_play.grid(row=0, column=1, padx=5, pady=5)
+
+b_hist_left = tk.Button(frame_mid, text ="show histogram", width=20)
+b_hist_left.grid(row=0, column=0, padx=5, pady=5)
+
+b_hist_right = tk.Button(frame_mid, text ="show histogram", width=20)
+b_hist_right.grid(row=0, column=2, padx=5, pady=5)
+
 
 # bottom ===============================================================================================================
 frame_bottom = tk.Frame(master=window, height=250, bd=1, relief="raised")
@@ -102,6 +143,35 @@ frame_bottom.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 # bottom left
 bot_left = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief="raised")
 bot_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+
+# button
+b_tresholding = tk.Button(bot_left, text ="Tresholding", width=10)
+b_tresholding.grid(row=0, column=0, padx=5, pady=5)
+
+b_equalization = tk.Button(bot_left, text ="Equalization", width=10)
+b_equalization.grid(row=0, column=1, padx=5, pady=5)
+
+b_sketch = tk.Button(bot_left, text ="Sketch", width=10)
+b_sketch.grid(row=0, column=2, padx=5, pady=5)
+
+b_blur = tk.Button(bot_left, text ="Blur", width=10)
+b_blur.grid(row=1, column=0, padx=5, pady=5)
+
+b_gray = tk.Button(bot_left, text ="Grayscale", width=10)
+b_gray.grid(row=1, column=1, padx=5, pady=5)
+
+b_bright = tk.Button(bot_left, text ="Brightness", width=10)
+b_bright.grid(row=1, column=2, padx=5, pady=5)
+
+b_negative = tk.Button(bot_left, text ="Negative", width=10)
+b_negative.grid(row=2, column=0, padx=5, pady=5)
+
+b_mirror = tk.Button(bot_left, text ="Mirroring", width=10)
+b_mirror.grid(row=2, column=1, padx=5, pady=5)
+
+b_rotation = tk.Button(bot_left, text ="Rotation", width=10)
+b_rotation.grid(row=2, column=2, padx=5, pady=5)
+
 
 # bottom right
 bot_right = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief="raised")
