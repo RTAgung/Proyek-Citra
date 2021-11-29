@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, NW, filedialog
+from tkinter import ttk, NW, filedialog, E, W
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 
@@ -50,7 +50,7 @@ def open_img():
     x = filename
 
     matrix_img = cv2.imread(x)
-    matrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)
+    matrix_img = cv2.resize(matrix_img, dsize=(630, 270), interpolation=cv2.INTER_CUBIC)
     matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)
 
     img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))
@@ -69,16 +69,25 @@ def show_hist():
     matrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)
     matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)
 
-    # histr = cv2.calcHist([matrix_img], [0], None, [256], [0, 256])
+    histr = cv2.calcHist([matrix_img], [0], None, [256], [0, 256])
 
-    f = Figure(figsize=(1, 1), dpi=50)
+    '''f = Figure(figsize=(1, 1), dpi=50)
     a = f.add_subplot()
 
     canvas = FigureCanvasTkAgg(f, hist_left)
-    canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)
+    canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)'''
 
-    plt.plot(matrix_img, ax=a)
-    plt.show()
+    plt.plot(histr)
+    plt.savefig('hist_left.png')
+
+    matrix_img_hist = cv2.imread('hist_left.png')
+    matrix_img_hist = cv2.resize(matrix_img_hist, dsize=(480, 90), interpolation=cv2.INTER_CUBIC)
+    matrix_img_hist = cv2.cvtColor(matrix_img_hist, cv2.COLOR_BGR2RGB)
+    img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img_hist))
+
+    panel = tk.Label(hist_left, image=img)
+    panel.image = img
+    panel.pack()
 
 
 # create a toplevel menu
@@ -126,14 +135,15 @@ frame_mid.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 '''image = Image.open('play.png')
 image = image.resize((30,30))
 play = PhotoImage(file ='play.png')'''
-b_play = tk.Button(frame_mid, text ="play", width=20)
-b_play.grid(row=0, column=1, padx=5, pady=5)
 
 b_hist_left = tk.Button(frame_mid, text ="show histogram", width=20)
-b_hist_left.grid(row=0, column=0, padx=5, pady=5)
+b_hist_left.grid(row=0, column=0, padx=10, pady=15)
+
+b_play = tk.Button(frame_mid, text ="process", width=20)
+b_play.grid(row=0, column=1, padx=390, pady=15)
 
 b_hist_right = tk.Button(frame_mid, text ="show histogram", width=20)
-b_hist_right.grid(row=0, column=2, padx=5, pady=5)
+b_hist_right.grid(row=0, column=2, padx=10, pady=15, sticky=W)
 
 
 # bottom ===============================================================================================================
