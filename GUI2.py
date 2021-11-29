@@ -73,7 +73,6 @@ def show_hist():
 
     '''f = Figure(figsize=(1, 1), dpi=50)
     a = f.add_subplot()
-
     canvas = FigureCanvasTkAgg(f, hist_left)
     canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)'''
 
@@ -200,8 +199,6 @@ img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))
 panel = tk.Label(citra_left, image=img)
 panel.image = img
 panel.pack()
-
-
 canvas = tk.Canvas(citra_left, width=300, height=300)
 canvas.pack()
 img = ImageTk.PhotoImage(Image.open(filename))
