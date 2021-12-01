@@ -55,9 +55,8 @@ def open_img():
 
     img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))
 
-    panel = tk.Label(citra_left, image=img)
-    panel.image = img
-    panel.pack()
+    panel_img_left.configure(image=img)
+    panel_img_left.image = img
 
 
 def show_hist():
@@ -84,9 +83,8 @@ def show_hist():
     matrix_img_hist = cv2.cvtColor(matrix_img_hist, cv2.COLOR_BGR2RGB)
     img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img_hist))
 
-    panel = tk.Label(hist_left, image=img)
-    panel.image = img
-    panel.pack()
+    panel_hist_left.configure(image=img)
+    panel_hist_left.image = img
 
 
 # create a toplevel menu
@@ -109,9 +107,15 @@ top_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 citra_left = tk.Frame(master=top_left, bd=1, width=640, height=280, relief="raised")
 citra_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 
+panel_img_left = tk.Label(citra_left)
+panel_img_left.pack()
+
 # hist left
 hist_left = tk.Frame(master=top_left, bd=1, width=640, height=100, relief="raised")
 hist_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+
+panel_hist_left = tk.Label(hist_left)
+panel_hist_left.pack()
 
 # top right
 top_right = tk.Frame(master=frame_top, bd=1, width=640, height=420, relief="raised")
