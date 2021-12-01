@@ -154,33 +154,35 @@ bot_left = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief="ra
 bot_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 
 # button
-b_tresholding = tk.Button(bot_left, text ="Tresholding", width=10)
+b_tresholding = tk.Button(bot_left, text ="Tresholding", width=15)
 b_tresholding.grid(row=0, column=0, padx=5, pady=5)
 
-b_equalization = tk.Button(bot_left, text ="Equalization", width=10)
+b_equalization = tk.Button(bot_left, text ="Equalization", width=15)
 b_equalization.grid(row=0, column=1, padx=5, pady=5)
 
-b_sketch = tk.Button(bot_left, text ="Sketch", width=10)
+b_sketch = tk.Button(bot_left, text ="Sketch", width=15)
 b_sketch.grid(row=0, column=2, padx=5, pady=5)
 
-b_blur = tk.Button(bot_left, text ="Blur", width=10)
+b_blur = tk.Button(bot_left, text ="Blur", width=15)
 b_blur.grid(row=1, column=0, padx=5, pady=5)
 
-b_gray = tk.Button(bot_left, text ="Grayscale", width=10)
+b_gray = tk.Button(bot_left, text ="Grayscale", width=15)
 b_gray.grid(row=1, column=1, padx=5, pady=5)
 
-b_bright = tk.Button(bot_left, text ="Brightness", width=10)
+b_bright = tk.Button(bot_left, text ="Brightness", width=15)
 b_bright.grid(row=1, column=2, padx=5, pady=5)
 
-b_negative = tk.Button(bot_left, text ="Negative", width=10)
+b_negative = tk.Button(bot_left, text ="Negative", width=15)
 b_negative.grid(row=2, column=0, padx=5, pady=5)
 
-b_mirror = tk.Button(bot_left, text ="Mirroring", width=10)
+b_mirror = tk.Button(bot_left, text ="Mirroring", width=15)
 b_mirror.grid(row=2, column=1, padx=5, pady=5)
 
-b_rotation = tk.Button(bot_left, text ="Rotation", width=10)
-b_rotation.grid(row=2, column=2, padx=5, pady=5)
+b_sharpening = tk.Button(bot_left, text ="Sharpening", width=15)
+b_sharpening.grid(row=2, column=2, padx=5, pady=5)
 
+b_edge_detect = tk.Button(bot_left, text ="Edge Detection", width=15)
+b_edge_detect.grid(row=3, column=0, padx=5, pady=5)
 
 # bottom right
 bot_right = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief="raised")

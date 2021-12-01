@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-class RTAgung:
+class RTA_Func:
     def __init__(self, image):
         self.image = image
 
@@ -55,20 +55,28 @@ class RTAgung:
         return image
 
 
-file = "ndr.JPG"
-img = cv2.imread(file)
-img = cv2.resize(img, (400, 400), interpolation=cv2.INTER_CUBIC)
+class RTA_Panel:
+    def __init__(self, rta_func, frame):
+        self.rta_func = rta_func
+        self.frame = frame
 
-rta = RTAgung(img)
+    def
 
-# to_grayscale
-rta.show_img(rta.to_grayscale())
 
-# to_negative
-rta.show_img(rta.to_negative())
-
-# brightening
-rta.show_img(rta.brightening(100))
-
-# edge_detection
-rta.show_img(rta.edge_detection())
+# file = "ndr.JPG"
+# img = cv2.imread(file)
+# img = cv2.resize(img, (400, 400), interpolation=cv2.INTER_CUBIC)
+#
+# rta = RTAgung(img)
+#
+# # to_grayscale
+# rta.show_img(rta.to_grayscale())
+#
+# # to_negative
+# rta.show_img(rta.to_negative())
+#
+# # brightening
+# rta.show_img(rta.brightening(100))
+#
+# # edge_detection
+# rta.show_img(rta.edge_detection())
