@@ -45,7 +45,8 @@ class RTAgung:
         return image
 
 
-file = "D:\\Photo\\1 Syawwal 1440H\\_MG_9252.JPG"
+# file = "D:\\Photo\\1 Syawwal 1440H\\_MG_9252.JPG"
+file = "C:\\Users\\User\\OneDrive\\Pictures\\Front_wall.png"
 
 img = cv2.imread(file)
 # img = np.ones((400, 400)) * 125
