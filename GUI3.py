@@ -9,6 +9,7 @@ from PIL import Image, ImageTk
 
 from RTAgung import RTA
 from Regina import Regina
+from Zahra import Zahra
 
 
 class Citra:
@@ -24,6 +25,7 @@ class Citra:
 
         self.rta = RTA(self.matrix_img_left)
         self.ina = Regina(self.matrix_img_left)
+        self.zhr = Zahra(self.matrix_img_left)
 
         # create a toplevel menu
         menubar = tk.Menu()
@@ -99,7 +101,7 @@ class Citra:
         self.bot_right.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 
         # button
-        self.b_tresholding = tk.Button(bot_left, text="Tresholding", width=15)
+        self.b_tresholding = tk.Button(bot_left, text="Tresholding", width=15, command=self.frame_tresh)
         self.b_tresholding.grid(row=0, column=0, padx=5, pady=5)
 
         self.b_equalization = tk.Button(bot_left, text="Equalization", width=15, command=self.frame_equal)
@@ -120,10 +122,10 @@ class Citra:
         self.b_negative = tk.Button(bot_left, text="Negative", width=15, command=self.frame_negative)
         self.b_negative.grid(row=2, column=0, padx=5, pady=5)
 
-        self.b_mirror = tk.Button(bot_left, text="Mirroring", width=15)
+        self.b_mirror = tk.Button(bot_left, text="Mirroring", width=15, command=self.frame_mirror)
         self.b_mirror.grid(row=2, column=1, padx=5, pady=5)
 
-        self.b_sharpening = tk.Button(bot_left, text="Sharpening", width=15)
+        self.b_sharpening = tk.Button(bot_left, text="Sharpening", width=15, command=self.frame_sharp)
         self.b_sharpening.grid(row=2, column=2, padx=5, pady=5)
 
         self.b_edge_detect = tk.Button(bot_left, text="Edge Detection", width=15, command=self.frame_edge_detect)
@@ -173,6 +175,7 @@ class Citra:
 
         self.rta.update_img(self.matrix_img_left)
         self.ina.update_img(self.matrix_img_left)
+        self.zhr.update_img(self.matrix_img_left)
 
     def show_img_right(self):
         img = ImageTk.PhotoImage(image=Image.fromarray(self.matrix_img_right))
@@ -371,6 +374,75 @@ class Citra:
 
         panel_equal = tk.Button(self.bot_right, text="Process", command=button_action)
         panel_equal.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
+    
+    def frame_tresh(self):
+        panel_tresh = None
+        close_btn = None
+        slider_input = None
+
+        def button_action():
+            data = slider_input.get()
+            self.matrix_img_right = self.zhr.tresholding(th=data)
+            self.show_img_right()
+
+        def close_panel():
+            panel_tresh.destroy()
+            close_btn.destroy()
+            slider_input.destroy()
+        
+        slider_input = tk.Scale(self.bot_right, from_=0, to=255, orient=tk.HORIZONTAL)
+        slider_input.set(128)
+        slider_input.pack()
+
+        panel_tresh = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_tresh.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
+
+    def frame_mirror(self):
+        panel_mirror = None
+        close_btn = None
+        var = tk.IntVar()
+
+        def button_action():
+            self.matrix_img_right = self.zhr.mirroring(var.get())
+            self.show_img_right()
+
+        def close_panel():
+            panel_mirror.destroy()
+            close_btn.destroy()
+            B0.destroy()
+            B1.destroy()
+            B2.destroy()
+        
+        B0 = tk.Radiobutton(self.bot_right, text="Flip Vertical", variable=var, value=0)
+        B0.pack()
+        B1 = tk.Radiobutton(self.bot_right, text="Flip Horizontal", variable=var, value=1)
+        B1.pack()
+        B2 = tk.Radiobutton(self.bot_right, text="Flip Vertical & Horizontal", variable=var, value=-1)
+        B2.pack()
+
+        panel_mirror = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_mirror.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
+
+    def frame_sharp(self):
+        panel_sharp = None
+        close_btn = None
+
+        def button_action():
+            self.matrix_img_right = self.zhr.sharpening()
+            self.show_img_right()
+
+        def close_panel():
+            panel_sharp.destroy()
+            close_btn.destroy()
+        
+        panel_sharp = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_sharp.pack()
         close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
         close_btn.pack()
 

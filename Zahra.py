@@ -1,4 +1,4 @@
-from RTAgung import RTAgung
+from RTAgung import RTA
 import cv2
 import numpy as np
 
@@ -20,9 +20,9 @@ class Zahra:
         if image is None:
             image = self.image
         #convert ke grayscale
-        img_gray = RTAgung(image).to_grayscale()
+        img_gray = RTA(image).to_grayscale()
         #fungsi tresholding
-        th, img_gray_th = cv2.threshold(img_gray, th, 255, cv2.THRESH_OTSU)
+        th, img_gray_th = cv2.threshold(img_gray, th, 255, cv2.THRESH_BINARY)
         return(img_gray_th)
 
     def mirroring(self, key, image=None):
@@ -40,22 +40,25 @@ class Zahra:
         img_sharp = cv2.filter2D(src=image, ddepth=-1, kernel=kernel)
         return(img_sharp)
 
-file = "ndr.JPG"
+# file = "ndr.JPG"
 
-img = cv2.imread(file)
-img = cv2.resize(img, (400, 400), interpolation=cv2.INTER_CUBIC)
+# img = cv2.imread(file)
+# img = cv2.resize(img, (630, 270), interpolation=cv2.INTER_CUBIC)
 
-zahra = Zahra(img)
+# zahra = Zahra(img)
 
-#tresholding
-img = zahra.tresholding(th=190)
-zahra.show_img(img)
+# #tresholding
+# img = zahra.tresholding(th=30)
+# zahra.show_img(img)
 
-#mirroring
-key = 1     # key: 1->cermin ke kiri; 0->cermin ke atas; -1->cermin ke kiri & atas
-img = zahra.mirroring(key)
-zahra.show_img(img)
+# img = zahra.tresholding(th=210)
+# zahra.show_img(img)
 
-#sharpening
-img = zahra.sharpening()
-zahra.show_img(img)
+# #mirroring
+# key = 1     # key: 1->cermin ke kiri; 0->cermin ke atas; -1->cermin ke kiri & atas
+# img = zahra.mirroring(key)
+# zahra.show_img(img)
+
+# #sharpening
+# img = zahra.sharpening()
+# zahra.show_img(img)
