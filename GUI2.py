@@ -16,7 +16,10 @@ window = tk.Tk()
 window.geometry("1280x720")
 
 filename = ''
-matrix_img = None
+matrix_img_left = None
+matrix_img_right = None
+matrix_hist_left = None
+matrix_hist_right = None
 
 
 def open_file():
@@ -43,32 +46,41 @@ def open_file():
     open_img()
     show_hist()
 
+def save_file():
+    global matrix_img_right
+    global filename
+    #img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img_left))
+
+    matrix_img_right = cv2.cvtColor(matrix_img_right, cv2.COLOR_BGR2RGB)
+
+    cv2.imwrite(filename, matrix_img_right)
+
 
 def open_img():
-    global matrix_img
+    global matrix_img_left
     global panel
     x = filename
+    print(filename)
+    matrix_img_left = cv2.imread(x)
+    matrix_img_left = cv2.resize(matrix_img_left, dsize=(630, 270), interpolation=cv2.INTER_CUBIC)
+    matrix_img_left = cv2.cvtColor(matrix_img_left, cv2.COLOR_BGR2RGB)
 
-    matrix_img = cv2.imread(x)
-    matrix_img = cv2.resize(matrix_img, dsize=(630, 270), interpolation=cv2.INTER_CUBIC)
-    matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)
-
-    img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))
+    img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img_left))
 
     panel_img_left.configure(image=img)
     panel_img_left.image = img
 
 
 def show_hist():
-    global matrix_img
+    global matrix_hist_left
 
     x = filename
 
-    matrix_img = cv2.imread(x)
-    matrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)
-    matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)
+    matrix_hist_left = cv2.imread(x)
+    matrix_hist_left = cv2.resize(matrix_hist_left, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)
+    matrix_hist_left = cv2.cvtColor(matrix_hist_left, cv2.COLOR_BGR2RGB)
 
-    histr = cv2.calcHist([matrix_img], [0], None, [256], [0, 256])
+    histr = cv2.calcHist([matrix_hist_left], [0], None, [256], [0, 256])
 
     '''f = Figure(figsize=(1, 1), dpi=50)
     a = f.add_subplot()
@@ -90,7 +102,7 @@ def show_hist():
 # create a toplevel menu
 menubar = tk.Menu()
 menubar.add_command(label="Open File", command=open_file)
-menubar.add_command(label="Save File", command=window.quit)
+menubar.add_command(label="Save File", command=save_file)
 
 # display the menu
 window.config(menu=menubar)
@@ -107,14 +119,14 @@ top_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
 citra_left = tk.Frame(master=top_left, bd=1, width=640, height=280, relief="raised")
 citra_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 
-panel_img_left = tk.Label(citra_left)
+panel_img_left = tk.Label(citra_left, width=640)
 panel_img_left.pack()
 
 # hist left
 hist_left = tk.Frame(master=top_left, bd=1, width=640, height=100, relief="raised")
 hist_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 
-panel_hist_left = tk.Label(hist_left)
+panel_hist_left = tk.Label(hist_left, width=640)
 panel_hist_left.pack()
 
 # top right
@@ -139,14 +151,14 @@ frame_mid.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
 image = image.resize((30,30))
 play = PhotoImage(file ='play.png')'''
 
-b_hist_left = tk.Button(frame_mid, text ="show histogram", width=20)
+'''b_hist_left = tk.Button(frame_mid, text ="show histogram", width=20)
 b_hist_left.grid(row=0, column=0, padx=10, pady=15)
 
 b_play = tk.Button(frame_mid, text ="process", width=20)
 b_play.grid(row=0, column=1, padx=390, pady=15)
 
 b_hist_right = tk.Button(frame_mid, text ="show histogram", width=20)
-b_hist_right.grid(row=0, column=2, padx=10, pady=15, sticky=W)
+b_hist_right.grid(row=0, column=2, padx=10, pady=15, sticky=W)'''
 
 
 # bottom ===============================================================================================================
