@@ -1,16 +1,11 @@
 import tkinter as tk
-from tkinter import ttk, NW, filedialog, E, W
 from tkinter import filedialog as fd
 from tkinter.messagebox import showinfo
 import os
-from PIL.ImageTk import PhotoImage
 from matplotlib import pyplot as plt
-import numpy as np
 
 import cv2
 from PIL import Image, ImageTk
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
 
 from RTAgung import RTA
 
@@ -117,10 +112,10 @@ class Citra:
         self.b_gray = tk.Button(bot_left, text="Grayscale", width=15, command=self.frame_gray)
         self.b_gray.grid(row=1, column=1, padx=5, pady=5)
 
-        self.b_bright = tk.Button(bot_left, text="Brightness", width=15)
+        self.b_bright = tk.Button(bot_left, text="Brightness", width=15, command=self.frame_brightening)
         self.b_bright.grid(row=1, column=2, padx=5, pady=5)
 
-        self.b_negative = tk.Button(bot_left, text="Negative", width=15)
+        self.b_negative = tk.Button(bot_left, text="Negative", width=15, command=self.frame_negative)
         self.b_negative.grid(row=2, column=0, padx=5, pady=5)
 
         self.b_mirror = tk.Button(bot_left, text="Mirroring", width=15)
@@ -129,7 +124,7 @@ class Citra:
         self.b_sharpening = tk.Button(bot_left, text="Sharpening", width=15)
         self.b_sharpening.grid(row=2, column=2, padx=5, pady=5)
 
-        self.b_edge_detect = tk.Button(bot_left, text="Edge Detection", width=15)
+        self.b_edge_detect = tk.Button(bot_left, text="Edge Detection", width=15, command=self.frame_edge_detect)
         self.b_edge_detect.grid(row=3, column=0, padx=5, pady=5)
 
     def open_file(self):
@@ -184,7 +179,7 @@ class Citra:
         self.show_hist_right()
 
     def show_hist_left(self):
-        plt.figure(figsize=(18, 7))
+        plt.figure(figsize=(22, 7))
 
         x = self.matrix_img_left
         b, g, r = cv2.split(x)
@@ -195,11 +190,11 @@ class Citra:
         plt.hist(b, num_bins, color='blue', alpha=0.8)
         plt.hist(g, num_bins, color='green', alpha=0.8)
         plt.hist(r, num_bins, color='red', alpha=0.8)
-
+        plt.xlim([0, 255])
         plt.savefig('hist_left.png')
 
         matrix_img_hist = cv2.imread('hist_left.png')
-        matrix_img_hist = cv2.resize(matrix_img_hist, dsize=(480, 170), interpolation=cv2.INTER_CUBIC)
+        matrix_img_hist = cv2.resize(matrix_img_hist, dsize=(640, 170), interpolation=cv2.INTER_CUBIC)
         matrix_img_hist = cv2.cvtColor(matrix_img_hist, cv2.COLOR_BGR2RGB)
         img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img_hist))
 
@@ -207,7 +202,7 @@ class Citra:
         self.panel_hist_left.image = img
 
     def show_hist_right(self):
-        plt.figure(figsize=(18, 7))
+        plt.figure(figsize=(22, 7))
 
         x = self.matrix_img_right
         num_bins = 255
@@ -223,10 +218,11 @@ class Citra:
             plt.hist(g, num_bins, color='green', alpha=0.8)
             plt.hist(r, num_bins, color='red', alpha=0.8)
 
+        plt.xlim([0, 255])
         plt.savefig('hist_right.png')
 
         matrix_img_hist = cv2.imread('hist_right.png')
-        matrix_img_hist = cv2.resize(matrix_img_hist, dsize=(480, 170), interpolation=cv2.INTER_CUBIC)
+        matrix_img_hist = cv2.resize(matrix_img_hist, dsize=(640, 170), interpolation=cv2.INTER_CUBIC)
         matrix_img_hist = cv2.cvtColor(matrix_img_hist, cv2.COLOR_BGR2RGB)
         img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img_hist))
 
@@ -235,14 +231,77 @@ class Citra:
 
     def frame_gray(self):
         panel_gray = None
+        close_btn = None
 
-        def button_gray_action():
+        def button_action():
             self.matrix_img_right = self.rta.to_grayscale()
             self.show_img_right()
-            panel_gray.destroy()
 
-        panel_gray = tk.Button(self.bot_right, text="Process", command=button_gray_action)
+        def close_panel():
+            panel_gray.destroy()
+            close_btn.destroy()
+
+        panel_gray = tk.Button(self.bot_right, text="Process", command=button_action)
         panel_gray.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
+
+    def frame_negative(self):
+        panel_negative = None
+        close_btn = None
+
+        def button_action():
+            self.matrix_img_right = self.rta.to_negative()
+            self.show_img_right()
+
+        def close_panel():
+            panel_negative.destroy()
+            close_btn.destroy()
+
+        panel_negative = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_negative.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
+
+    def frame_brightening(self):
+        panel_bright = None
+        close_btn = None
+        slider_input = None
+
+        def button_action():
+            data = slider_input.get()
+            self.matrix_img_right = self.rta.brightening(data)
+            self.show_img_right()
+
+        def close_panel():
+            panel_bright.destroy()
+            close_btn.destroy()
+            slider_input.destroy()
+
+        slider_input = tk.Scale(self.bot_right, from_=-255, to=255, orient=tk.HORIZONTAL)
+        slider_input.set(0)
+        slider_input.pack()
+        panel_bright = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_bright.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
+
+    def frame_edge_detect(self):
+        panel_edge = None
+        close_btn = None
+
+        def button_action():
+            self.matrix_img_right = self.rta.edge_detection()
+            self.show_img_right()
+
+        def close_panel():
+            panel_edge.destroy()
+            close_btn.destroy()
+
+        panel_edge = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_edge.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
 
 
 Citra()
