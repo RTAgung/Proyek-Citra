@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 
-class RTA_Func:
+class RTA:
     def __init__(self, image):
         self.image = image
 
