@@ -1,0 +1,160 @@
+Index: GUI2.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import tkinter as tk\r\nfrom tkinter import ttk, NW, filedialog, E, W\r\nfrom tkinter import filedialog as fd\r\nfrom tkinter.messagebox import showinfo\r\n\r\nfrom PIL.ImageTk import PhotoImage\r\nfrom matplotlib import pyplot as plt\r\n\r\n\r\nimport cv2\r\nfrom PIL import Image, ImageTk\r\nfrom matplotlib.backends.backend_tkagg import FigureCanvasTkAgg\r\nfrom matplotlib.figure import Figure\r\n\r\nwindow = tk.Tk()\r\nwindow.geometry(\"1280x720\")\r\n\r\nfilename = ''\r\nmatrix_img = None\r\n\r\n\r\ndef open_file():\r\n    global filename\r\n\r\n    filetypes = (\r\n        ('image files', '*.jpeg'),\r\n        ('image files', '*.JPEG'),\r\n        ('image files', '*.jpg'),\r\n        ('image files', '*.JPG'),\r\n        ('image files', '*.png'),\r\n    )\r\n\r\n    filename = fd.askopenfilename(\r\n        title='Open a file',\r\n        initialdir='/',\r\n        filetypes=filetypes)\r\n\r\n    showinfo(\r\n        title='Selected File',\r\n        message=filename\r\n    )\r\n\r\n    open_img()\r\n    show_hist()\r\n\r\n\r\ndef open_img():\r\n    global matrix_img\r\n    global panel\r\n    x = filename\r\n\r\n    matrix_img = cv2.imread(x)\r\n    matrix_img = cv2.resize(matrix_img, dsize=(630, 270), interpolation=cv2.INTER_CUBIC)\r\n    matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)\r\n\r\n    img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))\r\n\r\n    panel = tk.Label(citra_left, image=img)\r\n    panel.image = img\r\n    panel.pack()\r\n\r\n\r\ndef show_hist():\r\n    global matrix_img\r\n\r\n    x = filename\r\n\r\n    matrix_img = cv2.imread(x)\r\n    matrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)\r\n    matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)\r\n\r\n    histr = cv2.calcHist([matrix_img], [0], None, [256], [0, 256])\r\n\r\n    '''f = Figure(figsize=(1, 1), dpi=50)\r\n    a = f.add_subplot()\r\n    canvas = FigureCanvasTkAgg(f, hist_left)\r\n    canvas.get_tk_widget().pack(side=tk.BOTTOM, fill=tk.BOTH, expand=True)'''\r\n\r\n    plt.plot(histr)\r\n    plt.savefig('hist_left.png')\r\n\r\n    matrix_img_hist = cv2.imread('hist_left.png')\r\n    matrix_img_hist = cv2.resize(matrix_img_hist, dsize=(480, 90), interpolation=cv2.INTER_CUBIC)\r\n    matrix_img_hist = cv2.cvtColor(matrix_img_hist, cv2.COLOR_BGR2RGB)\r\n    img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img_hist))\r\n\r\n    panel = tk.Label(hist_left, image=img)\r\n    panel.image = img\r\n    panel.pack()\r\n\r\n\r\n# create a toplevel menu\r\nmenubar = tk.Menu()\r\nmenubar.add_command(label=\"Open File\", command=open_file)\r\nmenubar.add_command(label=\"Save File\", command=window.quit)\r\n\r\n# display the menu\r\nwindow.config(menu=menubar)\r\n\r\n# top ==================================================================================================================\r\nframe_top = tk.Frame(master=window, width=200, height=420, bd=1, relief=\"raised\")\r\nframe_top.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# top left\r\ntop_left = tk.Frame(master=frame_top, bd=1, width=640, height=420, relief=\"raised\")\r\ntop_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)\r\n\r\n# citra left\r\ncitra_left = tk.Frame(master=top_left, bd=1, width=640, height=280, relief=\"raised\")\r\ncitra_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# hist left\r\nhist_left = tk.Frame(master=top_left, bd=1, width=640, height=100, relief=\"raised\")\r\nhist_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# top right\r\ntop_right = tk.Frame(master=frame_top, bd=1, width=640, height=420, relief=\"raised\")\r\ntop_right.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)\r\n\r\n# citra right\r\ncitra_right = tk.Frame(master=top_right, bd=1, width=640, height=280, relief=\"raised\")\r\ncitra_right.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# hist right\r\nhist_right = tk.Frame(master=top_right, bd=1, width=640, height=100, relief=\"raised\")\r\nhist_right.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n\r\n# mid ==================================================================================================================\r\nframe_mid = tk.Frame(master=window, height=50, bd=1, relief=\"raised\")\r\nframe_mid.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# button\r\n'''image = Image.open('play.png')\r\nimage = image.resize((30,30))\r\nplay = PhotoImage(file ='play.png')'''\r\n\r\nb_hist_left = tk.Button(frame_mid, text =\"show histogram\", width=20)\r\nb_hist_left.grid(row=0, column=0, padx=10, pady=15)\r\n\r\nb_play = tk.Button(frame_mid, text =\"process\", width=20)\r\nb_play.grid(row=0, column=1, padx=390, pady=15)\r\n\r\nb_hist_right = tk.Button(frame_mid, text =\"show histogram\", width=20)\r\nb_hist_right.grid(row=0, column=2, padx=10, pady=15, sticky=W)\r\n\r\n\r\n# bottom ===============================================================================================================\r\nframe_bottom = tk.Frame(master=window, height=250, bd=1, relief=\"raised\")\r\nframe_bottom.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# bottom left\r\nbot_left = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief=\"raised\")\r\nbot_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)\r\n\r\n# button\r\nb_tresholding = tk.Button(bot_left, text =\"Tresholding\", width=15)\r\nb_tresholding.grid(row=0, column=0, padx=5, pady=5)\r\n\r\nb_equalization = tk.Button(bot_left, text =\"Equalization\", width=15)\r\nb_equalization.grid(row=0, column=1, padx=5, pady=5)\r\n\r\nb_sketch = tk.Button(bot_left, text =\"Sketch\", width=15)\r\nb_sketch.grid(row=0, column=2, padx=5, pady=5)\r\n\r\nb_blur = tk.Button(bot_left, text =\"Blur\", width=15)\r\nb_blur.grid(row=1, column=0, padx=5, pady=5)\r\n\r\nb_gray = tk.Button(bot_left, text =\"Grayscale\", width=15)\r\nb_gray.grid(row=1, column=1, padx=5, pady=5)\r\n\r\nb_bright = tk.Button(bot_left, text =\"Brightness\", width=15)\r\nb_bright.grid(row=1, column=2, padx=5, pady=5)\r\n\r\nb_negative = tk.Button(bot_left, text =\"Negative\", width=15)\r\nb_negative.grid(row=2, column=0, padx=5, pady=5)\r\n\r\nb_mirror = tk.Button(bot_left, text =\"Mirroring\", width=15)\r\nb_mirror.grid(row=2, column=1, padx=5, pady=5)\r\n\r\nb_sharpening = tk.Button(bot_left, text =\"Sharpening\", width=15)\r\nb_sharpening.grid(row=2, column=2, padx=5, pady=5)\r\n\r\nb_edge_detect = tk.Button(bot_left, text =\"Edge Detection\", width=15)\r\nb_edge_detect.grid(row=3, column=0, padx=5, pady=5)\r\n\r\n# bottom right\r\nbot_right = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief=\"raised\")\r\nbot_right.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)\r\n\r\nwindow.mainloop()\r\n\r\n\r\n'''\r\ndef open_img():\r\nglobal matrix_img\r\nx = filename\r\nmatrix_img = cv2.imread(x)\r\nmatrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)\r\nimg = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))\r\npanel = tk.Label(citra_left, image=img)\r\npanel.image = img\r\npanel.pack()\r\ncanvas = tk.Canvas(citra_left, width=300, height=300)\r\ncanvas.pack()\r\nimg = ImageTk.PhotoImage(Image.open(filename))\r\ncanvas.create_image(20, 20, anchor=NW, image=img)\r\n'''
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/GUI2.py b/GUI2.py
+--- a/GUI2.py	(revision 5aafe9ac51a03777498c0cb956be0e53fd1cec94)
++++ b/GUI2.py	(date 1638362661317)
+@@ -6,7 +6,6 @@
+ from PIL.ImageTk import PhotoImage
+ from matplotlib import pyplot as plt
+ 
+-
+ import cv2
+ from PIL import Image, ImageTk
+ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+@@ -125,7 +124,6 @@
+ hist_right = tk.Frame(master=top_right, bd=1, width=640, height=100, relief="raised")
+ hist_right.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+ 
+-
+ # mid ==================================================================================================================
+ frame_mid = tk.Frame(master=window, height=50, bd=1, relief="raised")
+ frame_mid.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+@@ -135,16 +133,15 @@
+ image = image.resize((30,30))
+ play = PhotoImage(file ='play.png')'''
+ 
+-b_hist_left = tk.Button(frame_mid, text ="show histogram", width=20)
++b_hist_left = tk.Button(frame_mid, text="show histogram", width=20)
+ b_hist_left.grid(row=0, column=0, padx=10, pady=15)
+ 
+-b_play = tk.Button(frame_mid, text ="process", width=20)
++b_play = tk.Button(frame_mid, text="process", width=20)
+ b_play.grid(row=0, column=1, padx=390, pady=15)
+ 
+-b_hist_right = tk.Button(frame_mid, text ="show histogram", width=20)
++b_hist_right = tk.Button(frame_mid, text="show histogram", width=20)
+ b_hist_right.grid(row=0, column=2, padx=10, pady=15, sticky=W)
+ 
+-
+ # bottom ===============================================================================================================
+ frame_bottom = tk.Frame(master=window, height=250, bd=1, relief="raised")
+ frame_bottom.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+@@ -154,43 +151,45 @@
+ bot_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+ 
+ # button
+-b_tresholding = tk.Button(bot_left, text ="Tresholding", width=15)
++b_tresholding = tk.Button(bot_left, text="Tresholding", width=15)
+ b_tresholding.grid(row=0, column=0, padx=5, pady=5)
+ 
+-b_equalization = tk.Button(bot_left, text ="Equalization", width=15)
++b_equalization = tk.Button(bot_left, text="Equalization", width=15)
+ b_equalization.grid(row=0, column=1, padx=5, pady=5)
+ 
+-b_sketch = tk.Button(bot_left, text ="Sketch", width=15)
++b_sketch = tk.Button(bot_left, text="Sketch", width=15)
+ b_sketch.grid(row=0, column=2, padx=5, pady=5)
+ 
+-b_blur = tk.Button(bot_left, text ="Blur", width=15)
++b_blur = tk.Button(bot_left, text="Blur", width=15)
+ b_blur.grid(row=1, column=0, padx=5, pady=5)
+ 
+-b_gray = tk.Button(bot_left, text ="Grayscale", width=15)
++b_gray = tk.Button(bot_left, text="Grayscale", width=15, command=lambda: new_matrix_img == rta_panel.frame_togrey())
+ b_gray.grid(row=1, column=1, padx=5, pady=5)
+ 
+-b_bright = tk.Button(bot_left, text ="Brightness", width=15)
++b_bright = tk.Button(bot_left, text="Brightness", width=15)
+ b_bright.grid(row=1, column=2, padx=5, pady=5)
+ 
+-b_negative = tk.Button(bot_left, text ="Negative", width=15)
++b_negative = tk.Button(bot_left, text="Negative", width=15)
+ b_negative.grid(row=2, column=0, padx=5, pady=5)
+ 
+-b_mirror = tk.Button(bot_left, text ="Mirroring", width=15)
++b_mirror = tk.Button(bot_left, text="Mirroring", width=15)
+ b_mirror.grid(row=2, column=1, padx=5, pady=5)
+ 
+-b_sharpening = tk.Button(bot_left, text ="Sharpening", width=15)
++b_sharpening = tk.Button(bot_left, text="Sharpening", width=15)
+ b_sharpening.grid(row=2, column=2, padx=5, pady=5)
+ 
+-b_edge_detect = tk.Button(bot_left, text ="Edge Detection", width=15)
++b_edge_detect = tk.Button(bot_left, text="Edge Detection", width=15)
+ b_edge_detect.grid(row=3, column=0, padx=5, pady=5)
+ 
++tes = tk.Button(bot_left, text="Tes", width=15)
++tes.grid(row=3, column=1, padx=5, pady=5)
++
+ # bottom right
+ bot_right = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief="raised")
+ bot_right.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)
+ 
+ window.mainloop()
+ 
+-
+ '''
+ def open_img():
+ global matrix_img
+@@ -205,4 +204,4 @@
+ canvas.pack()
+ img = ImageTk.PhotoImage(Image.open(filename))
+ canvas.create_image(20, 20, anchor=NW, image=img)
+-'''
+\ No newline at end of file
++'''
+Index: RTAgung.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import cv2\r\nimport numpy as np\r\n\r\n\r\nclass RTA_Func:\r\n    def __init__(self, image):\r\n        self.image = image\r\n\r\n    def update_img(self, image):\r\n        self.image = image\r\n\r\n    def show_img(self, image=None):\r\n        if image is None:\r\n            image = self.image\r\n        cv2.imshow('image effect', image)\r\n        cv2.waitKey(0)\r\n        cv2.destroyAllWindows()\r\n\r\n    def describe(self, image=None):\r\n        if image is None:\r\n            image = self.image\r\n        print(image.shape)\r\n        print(image[:2][:2])\r\n\r\n    def to_grayscale(self, image=None):\r\n        if image is None:\r\n            image = self.image\r\n        image = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)\r\n        return image\r\n\r\n    def to_negative(self, image=None):\r\n        if image is None:\r\n            image = self.image\r\n        image = cv2.bitwise_not(image)\r\n        return image\r\n\r\n    def brightening(self, value, image=None):\r\n        if image is None:\r\n            image = self.image\r\n        image = image.astype('int16')\r\n        image += value\r\n        image = np.where(image > 255, 255,\r\n                         np.where(image < 0, 0, image))\r\n        image = image.astype('uint8')\r\n        return image\r\n\r\n    def edge_detection(self, image=None):\r\n        if image is None:\r\n            image = self.image\r\n        kernel = np.array([[-1, -1, -1],\r\n                           [-1, 8, -1],\r\n                           [-1, -1, -1]])\r\n        image = self.to_grayscale(image)\r\n        image = cv2.filter2D(src=image, ddepth=-1, kernel=kernel)\r\n        return image\r\n\r\n\r\nclass RTA_Panel:\r\n    def __init__(self, rta_func, frame):\r\n        self.rta_func = rta_func\r\n        self.frame = frame\r\n\r\n    def\r\n\r\n\r\n# file = \"ndr.JPG\"\r\n# img = cv2.imread(file)\r\n# img = cv2.resize(img, (400, 400), interpolation=cv2.INTER_CUBIC)\r\n#\r\n# rta = RTAgung(img)\r\n#\r\n# # to_grayscale\r\n# rta.show_img(rta.to_grayscale())\r\n#\r\n# # to_negative\r\n# rta.show_img(rta.to_negative())\r\n#\r\n# # brightening\r\n# rta.show_img(rta.brightening(100))\r\n#\r\n# # edge_detection\r\n# rta.show_img(rta.edge_detection())\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/RTAgung.py b/RTAgung.py
+--- a/RTAgung.py	(revision 5aafe9ac51a03777498c0cb956be0e53fd1cec94)
++++ b/RTAgung.py	(date 1638335548135)
+@@ -1,8 +1,9 @@
+ import cv2
+ import numpy as np
++import tkinter as tk
+ 
+ 
+-class RTA_Func:
++class RTAFunc:
+     def __init__(self, image):
+         self.image = image
+ 
+@@ -55,12 +56,24 @@
+         return image
+ 
+ 
+-class RTA_Panel:
+-    def __init__(self, rta_func, frame):
+-        self.rta_func = rta_func
++class RTAPanel:
++    def __init__(self, rta_func, frame=None):
++        self.func = rta_func
+         self.frame = frame
+ 
+-    def
++    def set_frame(self, frame):
++        self.frame = frame
++
++    def frame_togrey(self):
++        B = tk.Button(self.frame, text="Hello")
++        B.pack()
++
++        return "Mantap"
++
++
++
++
++
+ 
+ 
+ # file = "ndr.JPG"

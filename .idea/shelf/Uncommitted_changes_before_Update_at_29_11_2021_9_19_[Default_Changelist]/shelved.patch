@@ -1,0 +1,88 @@
+Index: GUI2.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import tkinter as tk\r\nfrom tkinter import ttk, NW, filedialog\r\nfrom tkinter import filedialog as fd\r\nfrom tkinter.messagebox import showinfo\r\n\r\nimport cv2\r\nfrom PIL import Image, ImageTk\r\n\r\nwindow = tk.Tk()\r\nwindow.geometry(\"1280x720\")\r\n\r\nfilename = ''\r\nmatrix_img = None\r\n\r\n\r\ndef open_file():\r\n    global filename\r\n\r\n    filetypes = (\r\n        ('image files', '*.jpeg'),\r\n        ('image files', '*.JPEG'),\r\n        ('image files', '*.jpg'),\r\n        ('image files', '*.JPG'),\r\n        ('image files', '*.png'),\r\n    )\r\n\r\n    filename = fd.askopenfilename(\r\n        title='Open a file',\r\n        initialdir='/',\r\n        filetypes=filetypes)\r\n\r\n    showinfo(\r\n        title='Selected File',\r\n        message=filename\r\n    )\r\n\r\n    open_img()\r\n\r\n\r\ndef open_img():\r\n    global matrix_img\r\n    global panel\r\n    x = filename\r\n\r\n    matrix_img = cv2.imread(x)\r\n    matrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)\r\n    matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)\r\n\r\n    img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))\r\n\r\n    panel = tk.Label(citra_left, image=img)\r\n    panel.image = img\r\n    panel.pack()\r\n\r\n\r\n# create a toplevel menu\r\nmenubar = tk.Menu()\r\nmenubar.add_command(label=\"Open File\", command=open_file)\r\nmenubar.add_command(label=\"Save File\", command=window.quit)\r\n\r\n# display the menu\r\nwindow.config(menu=menubar)\r\n\r\n# top ==================================================================================================================\r\nframe_top = tk.Frame(master=window, width=200, height=420, bd=1, relief=\"raised\")\r\nframe_top.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# top left\r\ntop_left = tk.Frame(master=frame_top, bd=1, width=640, height=420, relief=\"raised\")\r\ntop_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)\r\n\r\n# citra left\r\ncitra_left = tk.Frame(master=top_left, bd=1, width=640, height=280, relief=\"raised\")\r\ncitra_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# hist left\r\nhist_left = tk.Frame(master=top_left, bd=1, width=640, height=100, relief=\"raised\")\r\nhist_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# top right\r\ntop_right = tk.Frame(master=frame_top, bd=1, width=640, height=420, relief=\"raised\")\r\ntop_right.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)\r\n\r\n# citra right\r\ncitra_right = tk.Frame(master=top_right, bd=1, width=640, height=280, relief=\"raised\")\r\ncitra_right.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# hist right\r\nhist_right = tk.Frame(master=top_right, bd=1, width=640, height=100, relief=\"raised\")\r\nhist_right.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n\r\n# mid ==================================================================================================================\r\nframe_mid = tk.Frame(master=window, height=50, bd=1, relief=\"raised\")\r\nframe_mid.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n\r\n# bottom ===============================================================================================================\r\nframe_bottom = tk.Frame(master=window, height=250, bd=1, relief=\"raised\")\r\nframe_bottom.pack(fill=tk.BOTH, side=tk.TOP, expand=True)\r\n\r\n# bottom left\r\nbot_left = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief=\"raised\")\r\nbot_left.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)\r\n\r\n# bottom right\r\nbot_right = tk.Frame(master=frame_bottom, bd=1, width=640, height=250, relief=\"raised\")\r\nbot_right.pack(fill=tk.BOTH, side=tk.LEFT, expand=True)\r\n\r\nwindow.mainloop()\r\n\r\n\r\n'''\r\ndef open_img():\r\nglobal matrix_img\r\nx = filename\r\nmatrix_img = cv2.imread(x)\r\nmatrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)\r\nimg = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))\r\npanel = tk.Label(citra_left, image=img)\r\npanel.image = img\r\npanel.pack()\r\n\r\n\r\ncanvas = tk.Canvas(citra_left, width=300, height=300)\r\ncanvas.pack()\r\nimg = ImageTk.PhotoImage(Image.open(filename))\r\ncanvas.create_image(20, 20, anchor=NW, image=img)\r\n'''
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/GUI2.py b/GUI2.py
+--- a/GUI2.py	(revision c68c081ee5d194d0c2e24eec5c610bc1080039e2)
++++ b/GUI2.py	(date 1638101042472)
+@@ -4,6 +4,7 @@
+ from tkinter.messagebox import showinfo
+ 
+ import cv2
++import numpy as np
+ from PIL import Image, ImageTk
+ 
+ window = tk.Tk()
+@@ -39,18 +40,19 @@
+ 
+ def open_img():
+     global matrix_img
+-    global panel
+-    x = filename
++    global canvas_left_container
++    global canvas_left
+ 
+-    matrix_img = cv2.imread(x)
+-    matrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)
++    matrix_img = cv2.imread(filename)
+     matrix_img = cv2.cvtColor(matrix_img, cv2.COLOR_BGR2RGB)
++    matrix_img = cv2.resize(matrix_img, dsize=(480, 270), interpolation=cv2.INTER_CUBIC)
+ 
+-    img = ImageTk.PhotoImage(image=Image.fromarray(matrix_img))
++    img = ImageTk.PhotoImage(image=Image.fromarray(np.ones((270, 480)) * 1))
++    canvas_left.itemconfig(canvas_left_container, image=img)
+ 
+-    panel = tk.Label(citra_left, image=img)
+-    panel.image = img
+-    panel.pack()
++    # panel = tk.Label(citra_left, image=img)
++    # panel.image = img
++    # panel.pack()
+ 
+ 
+ # create a toplevel menu
+@@ -73,6 +75,13 @@
+ citra_left = tk.Frame(master=top_left, bd=1, width=640, height=280, relief="raised")
+ citra_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+ 
++canvas_left = tk.Canvas(master=citra_left, width=640, height=280)
++canvas_left.pack(fill=tk.BOTH, side=tk.RIGHT, expand=True)
++
++white_img = np.ones((270, 480)) * 150
++white_img = ImageTk.PhotoImage(image=Image.fromarray(white_img))
++canvas_left_container = canvas_left.create_image(80, 0, anchor="nw", image=white_img)
++
+ # hist left
+ hist_left = tk.Frame(master=top_left, bd=1, width=640, height=100, relief="raised")
+ hist_left.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+@@ -89,12 +98,10 @@
+ hist_right = tk.Frame(master=top_right, bd=1, width=640, height=100, relief="raised")
+ hist_right.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+ 
+-
+ # mid ==================================================================================================================
+ frame_mid = tk.Frame(master=window, height=50, bd=1, relief="raised")
+ frame_mid.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+ 
+-
+ # bottom ===============================================================================================================
+ frame_bottom = tk.Frame(master=window, height=250, bd=1, relief="raised")
+ frame_bottom.pack(fill=tk.BOTH, side=tk.TOP, expand=True)
+@@ -109,7 +116,6 @@
+ 
+ window.mainloop()
+ 
+-
+ '''
+ def open_img():
+ global matrix_img
+@@ -126,4 +132,4 @@
+ canvas.pack()
+ img = ImageTk.PhotoImage(Image.open(filename))
+ canvas.create_image(20, 20, anchor=NW, image=img)
+-'''
+\ No newline at end of file
++'''
