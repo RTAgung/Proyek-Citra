@@ -55,14 +55,6 @@ class RTA_Func:
         return image
 
 
-class RTA_Panel:
-    def __init__(self, rta_func, frame):
-        self.rta_func = rta_func
-        self.frame = frame
-
-    def
-
-
 # file = "ndr.JPG"
 # img = cv2.imread(file)
 # img = cv2.resize(img, (400, 400), interpolation=cv2.INTER_CUBIC)
