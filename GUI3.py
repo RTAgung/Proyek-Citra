@@ -8,6 +8,7 @@ import cv2
 from PIL import Image, ImageTk
 
 from RTAgung import RTA
+from Regina import Regina
 
 
 class Citra:
@@ -22,6 +23,7 @@ class Citra:
         self.matrix_hist_right = None
 
         self.rta = RTA(self.matrix_img_left)
+        self.ina = Regina(self.matrix_img_left)
 
         # create a toplevel menu
         menubar = tk.Menu()
@@ -100,13 +102,13 @@ class Citra:
         self.b_tresholding = tk.Button(bot_left, text="Tresholding", width=15)
         self.b_tresholding.grid(row=0, column=0, padx=5, pady=5)
 
-        self.b_equalization = tk.Button(bot_left, text="Equalization", width=15)
+        self.b_equalization = tk.Button(bot_left, text="Equalization", width=15, command=self.frame_equal)
         self.b_equalization.grid(row=0, column=1, padx=5, pady=5)
 
-        self.b_sketch = tk.Button(bot_left, text="Sketch", width=15)
+        self.b_sketch = tk.Button(bot_left, text="Sketch", width=15, command=self.frame_sketch)
         self.b_sketch.grid(row=0, column=2, padx=5, pady=5)
 
-        self.b_blur = tk.Button(bot_left, text="Blur", width=15)
+        self.b_blur = tk.Button(bot_left, text="Blur", width=15, command=self.frame_blur)
         self.b_blur.grid(row=1, column=0, padx=5, pady=5)
 
         self.b_gray = tk.Button(bot_left, text="Grayscale", width=15, command=self.frame_gray)
@@ -170,6 +172,7 @@ class Citra:
         self.panel_img_left.image = img
 
         self.rta.update_img(self.matrix_img_left)
+        self.ina.update_img(self.matrix_img_left)
 
     def show_img_right(self):
         img = ImageTk.PhotoImage(image=Image.fromarray(self.matrix_img_right))
@@ -303,5 +306,72 @@ class Citra:
         close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
         close_btn.pack()
 
+    def frame_sketch(self):
+        panel_sketch = None
+        close_btn = None
+
+        def button_action():
+            self.matrix_img_right = self.ina.sketching()
+            self.show_img_right()
+
+        def close_panel():
+            panel_sketch.destroy()
+            close_btn.destroy()
+
+        panel_sketch = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_sketch.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
+
+    def frame_blur(self):
+        panel_blur = None
+        close_btn = None
+        var = tk.IntVar()
+
+        def button_action():
+            self.matrix_img_right = self.ina.blurring(var.get())
+            self.show_img_right()
+
+        def close_panel():
+            panel_blur.destroy()
+            close_btn.destroy()
+            B0.destroy()
+            B1.destroy()
+            B2.destroy()
+            B3.destroy()
+            B4.destroy()
+
+        B0 = tk.Radiobutton(self.bot_right, text="Gaussian Blur", variable=var, value=0)
+        B0.pack()
+        B1 = tk.Radiobutton(self.bot_right, text="Averaging Blur", variable=var, value=1)
+        B1.pack()
+        B2 = tk.Radiobutton(self.bot_right, text="Median Blurring", variable=var, value=2)
+        B2.pack()
+        B3 = tk.Radiobutton(self.bot_right, text="Bilateral Blurring", variable=var, value=3)
+        B3.pack()
+        B4 = tk.Radiobutton(self.bot_right, text="Blurring (Standard)", variable=var, value=4)
+        B4.pack()
+
+        panel_blur = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_blur.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
+
+    def frame_equal(self):
+        panel_equal = None
+        close_btn = None
+
+        def button_action():
+            self.matrix_img_right = self.ina.equalizationing()
+            self.show_img_right()
+
+        def close_panel():
+            panel_equal.destroy()
+            close_btn.destroy()
+
+        panel_equal = tk.Button(self.bot_right, text="Process", command=button_action)
+        panel_equal.pack()
+        close_btn = tk.Button(self.bot_right, text="Close", command=close_panel)
+        close_btn.pack()
 
 Citra()

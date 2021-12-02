@@ -5,6 +5,9 @@ class Regina:
     def __init__(self, image):
         self.image = image
 
+    def update_img(self, image):
+        self.image = image
+
     def menu(self, number, number2):
         if number == 0:
             new_image = self.sketching()
@@ -30,7 +33,7 @@ class Regina:
         sketch_img = cv2.divide(grey_img, inverted_blur_img, scale=256.0)
         return sketch_img
 
-    def bluring(self, number):
+    def blurring(self, number):
         if number == 0:
             blur_img = cv2.GaussianBlur(self.image, (5, 5), 0)
         elif number == 1:
@@ -39,6 +42,9 @@ class Regina:
             blur_img = cv2.medianBlur(self.image, 5)
         elif number == 3:
             blur_img = cv2.bilateralFilter(self.image, 9, 75, 75)
+        elif number == 4:
+            kernel = np.ones((5, 5), np.float32) / 25
+            blur_img = cv2.filter2D(self.image, -1, kernel)
         return blur_img
 
     def equalizationing(self):
@@ -51,21 +57,21 @@ class Regina:
 
 
 def resizing(image):
-    scale_percent = 70
+    scale_percent = 20
     width = int(image.shape[1] * scale_percent / 100)
     height = int(image.shape[0] * scale_percent / 100)
     dim = (height, width)
     resized = cv2.resize(image, dim, interpolation=cv2.INTER_AREA)
     return resized
 
-file = 'play.png'
-img = cv2.imread(file)
-re_img = resizing(img)
-regina = Regina(re_img)
-
-regina.describe()
-regina.show_img(re_img)
-
-regina.menu(0,0)
-regina.menu(1,0)
-regina.menu(2,0)
+# file = 'ndr.JPG'
+# img = cv2.imread(file)
+# re_img = resizing(img)
+# regina = Regina(re_img)
+#
+# regina.describe()
+# regina.show_img(re_img)
+#
+# regina.menu(0,0)
+# regina.menu(1,4)
+# regina.menu(2,0)
